@@ -1,4 +1,17 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['login'])) {
+    header("Location: login.php");
+    exit;
+}
+
+require 'config/koneksi.php';
+
+// Query database
+$query = "SELECT * FROM pegawai";
+$result = mysqli_query($conn, $query);
+
 include 'layouts/header.php';
 ?>
     <main class="container py-4">
@@ -9,59 +22,6 @@ include 'layouts/header.php';
             <p class="text-muted">
                 Kelola dan pantau seluruh data pegawai perusahaan.
             </p>
-        </div>
-
-        <!-- Statistik Pegawai -->
-        <div class="row g-3 mb-4">
-
-            <!-- Total Pegawai -->
-            <div class="col-md-4">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body d-flex align-items-center gap-3">
-                        <div class="stat-icon bg-primary-subtle text-primary">
-                            <i class="bi bi-people-fill"></i>
-                        </div>
-
-                        <div>
-                            <p class="text-muted mb-1">Total Pegawai</p>
-                            <h3 class="fw-bold mb-0">25</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pegawai Aktif -->
-            <div class="col-md-4">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body d-flex align-items-center gap-3">
-                        <div class="stat-icon bg-success-subtle text-success">
-                            <i class="bi bi-person-check-fill"></i>
-                        </div>
-
-                        <div>
-                            <p class="text-muted mb-1">Pegawai Aktif</p>
-                            <h3 class="fw-bold mb-0">22</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pegawai Tidak Aktif -->
-            <div class="col-md-4">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body d-flex align-items-center gap-3">
-                        <div class="stat-icon bg-warning-subtle text-warning">
-                            <i class="bi bi-person-dash-fill"></i>
-                        </div>
-
-                        <div>
-                            <p class="text-muted mb-1">Tidak Aktif</p>
-                            <h3 class="fw-bold mb-0">3</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
 
         <!-- Toolbar -->
@@ -82,9 +42,7 @@ include 'layouts/header.php';
                         <i class="bi bi-search"></i>
                     </span>
 
-                    <input type="text"
-                        class="form-control"
-                        placeholder="Cari pegawai...">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Cari pegawai...">
                 </div>
             </div>
         </div>
@@ -94,7 +52,7 @@ include 'layouts/header.php';
 
             <div class="card-body p-0">
 
-                <div class="table-responsive">
+                <div class="table-responsive" id="tabelPegawai">
 
                     <table class="table table-hover align-middle mb-0">
 
@@ -106,157 +64,55 @@ include 'layouts/header.php';
                                 <th>Departemen</th>
                                 <th>Jabatan</th>
                                 <th>Email</th>
-                                <th>Status</th>
                                 <th class="text-center">Aksi</th>
                             </tr>
                         </thead>
-
-                        <!-- Isi Tabel -->
                         <tbody>
-
-                            <!-- Data 1 -->
+                            <?php
+                            $no = 1;
+                            while ($row = mysqli_fetch_assoc($result)) {
+                            ?>
                             <tr>
-                                <td>1</td>
-
+                                <td><?= $no++ ?></td>
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
                                         <div class="employee-avatar bg-primary-subtle text-primary">
                                         <div>
-                                            <div class="fw-semibold">Andi Saputra</div>
-                                            <small class="text-muted">PGW001</small>
+                                            <div class="fw-semibold"><?= $row['nama_lengkap']; ?></div>
+                                            <small class="text-muted"><?= $row['kode_pegawai']; ?></small>
                                         </div>
                                     </div>
                                 </td>
 
-                                <td>IT</td>
-                                <td>Programmer</td>
-                                <td>andi@email.com</td>
-
-                                <td>
-                                    <span class="badge bg-success-subtle text-success">
-                                        Aktif
-                                    </span>
-                                </td>
+                                <td><?= $row['departemen']; ?></td>
+                                <td><?= $row['jabatan']; ?></td>
+                                <td><?= $row['email']; ?></td>
 
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center gap-1">
 
-                                        <a href="detail.php?id=1"
+                                        <a href="detail.php?id=<?= $row['id']; ?>"
                                         class="btn btn-sm btn-info text-white mr-2"
                                         title="Detail">
                                             <i class="bi bi-eye"></i>
                                         </a>
 
-                                        <a href="edit.php?id=1"
+                                        <a href="edit.php?id=<?= $row['id']; ?>"
                                         class="btn btn-sm btn-warning mr-2"
                                         title="Edit">
                                             <i class="bi bi-pencil-square"></i>
                                         </a>
 
-                                        <button type="button"
-                                                class="btn btn-sm btn-danger mr-2"
-                                                title="Hapus">
+                                        <button type="button" class="btn btn-danger btn-sm"
+                                            onclick="hapusPegawai(<?= $row['id']; ?>)">
                                             <i class="bi bi-trash"></i>
                                         </button>
-
                                     </div>
                                 </td>
                             </tr>
-
-                            <!-- Data 2 -->
-                            <tr>
-                                <td>2</td>
-
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div>
-                                            <div class="fw-semibold">Siti Amelia</div>
-                                            <small class="text-muted">PGW002</small>
-                                        </div>
-                                    </div>
-                                </td>
-
-                                <td>HRD</td>
-                                <td>HR Staff</td>
-                                <td>siti@email.com</td>
-
-                                <td>
-                                    <span class="badge bg-success-subtle text-success">
-                                        Aktif
-                                    </span>
-                                </td>
-
-                                <td class="text-center">
-                                    <div class="d-flex justify-content-center gap-1">
-
-                                        <a href="detail.php?id=2"
-                                        class="btn btn-sm btn-info text-white mr-2">
-                                            <i class="bi bi-eye"></i>
-                                        </a>
-
-                                        <a href="edit.php?id=2"
-                                        class="btn btn-sm btn-warning mr-2">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </a>
-
-                                        <button type="button"
-                                                class="btn btn-sm btn-danger mr-2">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <!-- Data 3 -->
-                            <tr>
-                                <td>3</td>
-
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div>
-                                            <div class="fw-semibold">Budi Santoso</div>
-                                            <small class="text-muted">PGW003</small>
-                                        </div>
-                                    </div>
-                                </td>
-
-                                <td>Finance</td>
-                                <td>Accountant</td>
-                                <td>budi@email.com</td>
-
-                                <td>
-                                    <span class="badge bg-danger-subtle text-danger">
-                                        Tidak Aktif
-                                    </span>
-                                </td>
-
-                                <td class="text-center">
-                                    <div class="d-flex justify-content-center gap-1">
-
-                                        <a href="detail.php?id=3"
-                                        class="btn btn-sm btn-info text-white mr-2">
-                                            <i class="bi bi-eye"></i>
-                                        </a>
-
-                                        <a href="edit.php?id=3"
-                                        class="btn btn-sm btn-warning mr-2">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </a>
-
-                                        <button type="button"
-                                                class="btn btn-sm btn-danger mr-2">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-
-                                    </div>
-                                </td>
-                            </tr>
-
+                            <?php } ?>
                         </tbody>
-
                     </table>
-
                 </div>
             </div>
         </div>

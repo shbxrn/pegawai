@@ -14,23 +14,20 @@
             <div class="container-fluid px-4">
 
                 <!-- Brand -->
-                <a href="index.php" class="navbar-brand fw-bold">
-                    Manajemen Data Pegawai
+                <a href="index.php" class="navbar-brand fw-bold d-flex align-items-center gap-2">
+                    <div class="navbar-icon mr-2">
+                        <i class="bi bi-person-workspace"></i>
+                    </div>
+
+                    <span>Manajemen Data Pegawai</span>
                 </a>
 
                 <!-- Menu Navigasi -->
                 <div class="d-flex align-items-center gap-3">
 
-                    <a href="index.php" class="nav-link text-white">
-                        Dashboard
-                    </a>
-
-                    <div class="rounded-circle bg-light mr-4"
-                        style="width: 40px; height: 40px;">
-                    </div>
-
                     <!-- Logout -->
-                    <a href="login.php" class="btn btn-light btn-sm">
+                    <a href="logout.php" class="btn btn-danger btn-md">
+                        <i class="bi bi-box-arrow-right"></i>
                         Logout
                     </a>
 

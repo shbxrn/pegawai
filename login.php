@@ -1,3 +1,56 @@
+<?php
+session_start();
+require 'config/koneksi.php';
+
+// Jika sudah login, langsung ke halaman utama
+if (isset($_SESSION['login'])) {
+    header("Location: index.php");
+    exit;
+}
+
+// Proses login
+if (isset($_POST['login'])) {
+
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $password = $_POST['password'];
+
+    // Cari user berdasarkan email
+    $query = "SELECT * FROM user WHERE email = '$email'";
+    $result = mysqli_query($conn, $query);
+
+    if (mysqli_num_rows($result) > 0) {
+
+        $user = mysqli_fetch_assoc($result);
+
+        // Verifikasi password
+        if (password_verify($password, $user['password'])) {
+
+            $_SESSION['login'] = true;
+            $_SESSION['id'] = $user['id'];
+            $_SESSION['nama'] = $user['nama'];
+            $_SESSION['email'] = $user['email'];
+
+            echo "<script>
+                    alert('Berhasil login!');
+                    window.location='index.php';
+                </script>";
+            exit;
+
+        } else {
+            echo "<script>
+                    alert('Password yang kamu masukkan salah!');
+                    history.back();
+                  </script>";
+        }
+
+    } else {
+        echo "<script>
+                alert('Email tidak terdaftar!');
+              </script>";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,7 +73,7 @@
                 <i class="bi bi-person-workspace"></i>
             </div>
 
-            <h3 class="fw-bold">Welcome Back!</h3>
+            <h3 class="fw-bold">Selamat Datang!</h3>
 
             <p class="text-muted">
                 Silakan login untuk mengakses sistem.
@@ -77,8 +130,7 @@
             </div>
 
             <!-- Login Button -->
-            <button type="submit"
-                    class="btn btn-primary w-100 py-2">
+            <button type="submit" class="btn btn-primary w-100 py-2" name="login">
                 Login
                 <i class="bi bi-box-arrow-in-right ms-1"></i>
             </button>

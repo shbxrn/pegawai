@@ -59,14 +59,17 @@ body {
     min-height: 75px;
 }
 
-.stat-icon {
-    width: 55px;
-    height: 55px;
+.navbar-icon {
+    width: 40px;
+    height: 40px;
+    background-color: #e8f0fe;
+    color: #2563eb;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
-    font-size: 25px;
+    font-size: 20px;
+    flex-shrink: 0;
 }
 
 .footer {

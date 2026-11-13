@@ -1,4 +1,12 @@
 <?php
+require 'config/koneksi.php';
+
+$id = (int) $_GET['id'];
+
+$query = "SELECT * FROM pegawai WHERE id = $id";
+$result = mysqli_query($conn, $query);
+$data = mysqli_fetch_assoc($result);
+
 include 'layouts/header.php';
 ?>
 <main class="container py-4">
@@ -13,7 +21,7 @@ include 'layouts/header.php';
             </p>
         </div>
 
-        <a href="pegawai.php" class="btn btn-light border">
+        <a href="index.php" class="btn btn-light border">
             <i class="bi bi-arrow-left me-1"></i>
             Kembali
         </a>
@@ -26,21 +34,22 @@ include 'layouts/header.php';
 
             <div class="d-flex align-items-center gap-3">
 
-                <!-- Avatar -->
-                <div class="rounded-circle bg-primary-subtle text-primary
-                            d-flex align-items-center justify-content-center"
-                     style="width: 85px; height: 85px; font-size: 28px; font-weight: bold;">
-                    AS
-                </div>
+                <?php
+                $foto = !empty($data['foto'])
+                    ? 'assets/images/profile/' . $data['foto']
+                    : 'assets/images/profile/default.png';
+                ?>
+
+                <img src="<?= htmlspecialchars($foto); ?>"
+                    alt="Foto <?= htmlspecialchars($data['nama_lengkap']); ?>"
+                    width="150"
+                    height="150"
+                    style="object-fit: cover; border-radius: 50%;">
 
                 <!-- Identitas -->
-                <div>
-                    <h4 class="fw-bold mb-1">Andi Saputra</h4>
-                    <p class="text-muted mb-1">PGW001 · Programmer</p>
-
-                    <span class="badge bg-success-subtle text-success">
-                        Aktif
-                    </span>
+                <div class="ml-4">
+                    <h4 class="fw-bold mb-1"><?= $data['nama_lengkap']; ?></h4>
+                    <p class="text-muted mb-1"><?= $data['kode_pegawai']; ?> · <?= $data['jabatan']; ?></p>
                 </div>
 
             </div>
@@ -63,62 +72,25 @@ include 'layouts/header.php';
             <div class="row g-4">
 
                 <div class="col-md-6">
-                    <small class="text-muted">ID Pegawai</small>
-                    <p class="fw-semibold mb-0">PGW001</p>
+                    <small class="text-muted">Kode Pegawai</small>
+                    <p class="fw-semibold mb-0"><?= $data['kode_pegawai']; ?></p>
                 </div>
-
-                <div class="col-md-6">
-                    <small class="text-muted">Nama Lengkap</small>
-                    <p class="fw-semibold mb-0">Andi Saputra</p>
-                </div>
-
-                <div class="col-md-6">
-                    <small class="text-muted">Jenis Kelamin</small>
-                    <p class="fw-semibold mb-0">Laki-laki</p>
-                </div>
-
-                <div class="col-md-6">
-                    <small class="text-muted">Email</small>
-                    <p class="fw-semibold mb-0">andi@email.com</p>
-                </div>
-
-                <div class="col-md-6">
-                    <small class="text-muted">Nomor Telepon</small>
-                    <p class="fw-semibold mb-0">081234567890</p>
-                </div>
-
                 <div class="col-md-6">
                     <small class="text-muted">Departemen</small>
-                    <p class="fw-semibold mb-0">IT</p>
+                    <p class="fw-semibold mb-0"><?= $data['departemen']; ?></p>
                 </div>
-
+                <div class="col-md-6">
+                    <small class="text-muted">Nama Lengkap</small>
+                    <p class="fw-semibold mb-0"><?= $data['nama_lengkap']; ?></p>
+                </div>
                 <div class="col-md-6">
                     <small class="text-muted">Jabatan</small>
-                    <p class="fw-semibold mb-0">Programmer</p>
+                    <p class="fw-semibold mb-0"><?= $data['jabatan']; ?></p>
                 </div>
-
                 <div class="col-md-6">
-                    <small class="text-muted">Tanggal Bergabung</small>
-                    <p class="fw-semibold mb-0">15 Januari 2024</p>
+                    <small class="text-muted">Email</small>
+                    <p class="fw-semibold mb-0"><?= $data['email']; ?></p>
                 </div>
-
-                <div class="col-md-6">
-                    <small class="text-muted">Gaji Pokok</small>
-                    <p class="fw-semibold mb-0">Rp5.000.000</p>
-                </div>
-
-                <div class="col-md-6">
-                    <small class="text-muted">Status Pegawai</small>
-                    <p class="fw-semibold mb-0">Aktif</p>
-                </div>
-
-                <div class="col-12">
-                    <small class="text-muted">Alamat</small>
-                    <p class="fw-semibold mb-0">
-                        Jl. Merdeka No. 10, Malang
-                    </p>
-                </div>
-
             </div>
 
         </div>
@@ -127,7 +99,7 @@ include 'layouts/header.php';
     <!-- Tombol Edit -->
     <div class="d-flex justify-content-end mt-4">
 
-        <a href="edit.php?id=1" class="btn btn-warning">
+        <a href="edit.php?id=<?= $data['id']; ?>" class="btn btn-warning">
             <i class="bi bi-pencil-square me-1"></i>
             Edit Pegawai
         </a>

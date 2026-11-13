@@ -1,4 +1,11 @@
 <?php
+require 'config/koneksi.php';
+
+$id = (int) $_GET['id'];
+$query = "SELECT * FROM pegawai WHERE id = $id";
+$result = mysqli_query($conn, $query);
+$data = mysqli_fetch_assoc($result);
+
 include 'layouts/header.php';
 ?>
 <main class="container py-4">
@@ -15,106 +22,62 @@ include 'layouts/header.php';
     <div class="card border-0 shadow-sm">
         <div class="card-body p-4">
 
-            <form action="" method="POST" enctype="multipart/form-data">
-
+            <form action="proses/edit.php" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="id" value="<?= $data['id']; ?>">
                 <div class="row g-3">
 
-                    <div class="col-md-6">
-                        <label class="form-label">ID Pegawai</label>
-                        <input type="text" class="form-control"
-                               name="id_pegawai"
-                               value="PGW001" readonly>
+                    <div class="col-lg-12 col-md-12 col-sm-12 mb-3">
+                        <label class="form-label">Kode Pegawai</label>
+                        <input type="text" name="kode_pegawai" class="form-control" value="<?= $data['kode_pegawai']; ?>" required>
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-lg-12 col-md-12 col-sm-12 mb-3">
                         <label class="form-label">Nama Lengkap</label>
-                        <input type="text" class="form-control"
-                               name="nama"
-                               value="Andi Saputra" required>
+                        <input type="text" name="nama_lengkap" value="<?= $data['nama_lengkap']; ?>" class="form-control" required>
                     </div>
 
-                    <div class="col-md-6">
-                        <label class="form-label">Jenis Kelamin</label>
-                        <select name="jenis_kelamin" class="form-select">
-                            <option value="Laki-laki" selected>Laki-laki</option>
-                            <option value="Perempuan">Perempuan</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-6">
+                    <div class="col-lg-12 col-md-12 col-sm-12 mb-3">
                         <label class="form-label">Email</label>
-                        <input type="email" class="form-control"
-                               name="email"
-                               value="andi@email.com" required>
+                        <input type="email" name="email" value="<?= $data['email']; ?>" class="form-control" required>
                     </div>
 
-                    <div class="col-md-6">
-                        <label class="form-label">Nomor Telepon</label>
-                        <input type="tel" class="form-control"
-                               name="telepon"
-                               value="081234567890" required>
-                    </div>
-
-                    <div class="col-md-6">
+                    <div class="col-lg-12 col-md-12 col-sm-12 mb-3">
                         <label class="form-label">Departemen</label>
-                        <select name="departemen" class="form-select">
-                            <option value="IT" selected>IT</option>
-                            <option value="HRD">HRD</option>
-                            <option value="Finance">Finance</option>
-                            <option value="Marketing">Marketing</option>
+                        <select name="departemen" class="form-control" required>
+                            <option value="">Pilih departemen</option>
+                            <option value="IT" <?= $data['departemen'] == 'IT' ? 'selected' : ''; ?>>
+                                IT
+                            </option>
+                            <option value="HRD" <?= $data['departemen'] == 'HRD' ? 'selected' : ''; ?>>
+                                HRD                                </option>
+                            <option value="Finance" <?= $data['departemen'] == 'Finance' ? 'selected' : ''; ?>>
+                                Finance
+                            </option>
+                            <option value="Marketing" <?= $data['departemen'] == 'Marketing' ? 'selected' : ''; ?>>
+                                Marketing
+                            </option>
                         </select>
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-lg-12 col-md-12 col-sm-12 mb-3">
                         <label class="form-label">Jabatan</label>
-                        <input type="text" class="form-control"
-                               name="jabatan"
-                               value="Programmer" required>
+                        <input type="text" name="jabatan" value="<?= $data['jabatan']; ?>" class="form-control" required>
                     </div>
 
-                    <div class="col-md-6">
-                        <label class="form-label">Tanggal Bergabung</label>
-                        <input type="date" class="form-control"
-                               name="tanggal_bergabung"
-                               value="2024-01-15" required>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">Gaji Pokok (Rp)</label>
-                        <input type="number" class="form-control"
-                               name="gaji"
-                               value="5000000" min="0" required>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">Status Pegawai</label>
-                        <select name="status" class="form-select">
-                            <option value="Aktif" selected>Aktif</option>
-                            <option value="Tidak Aktif">Tidak Aktif</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-6">
+                    <div class="col-lg-12 col-md-12 col-sm-12 mb-3">
                         <label class="form-label">Foto Profil</label>
-                        <input type="file" name="foto"
-                               class="form-control" accept="image/*">
+                        <input type="file" name="foto" class="form-control" accept="image/*">
                         <small class="text-muted">
-                            Kosongkan jika tidak ingin mengganti foto.
+                            Foto saat ini:
+                            <?= $data['foto'] != "" ? htmlspecialchars($data['foto']) : 'Belum ada foto'; ?>
                         </small>
-                    </div>
-
-                    <div class="col-12">
-                        <label class="form-label">Alamat</label>
-                        <textarea name="alamat" class="form-control"
-                                  rows="3" required>Jl. Merdeka No. 10, Malang</textarea>
                     </div>
 
                 </div>
 
-                <!-- Tombol -->
                 <div class="d-flex justify-content-end gap-2 mt-4">
 
-                    <a href="pegawai.php" class="btn btn-light border">
+                    <a href="index.php" class="btn btn-light border mr-3">
                         Batal
                     </a>
 
